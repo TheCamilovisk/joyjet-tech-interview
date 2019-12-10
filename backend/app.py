@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 
 
-def _compute_discount(article_price, discount):
+def _apply_discount(article_price, discount):
     '''Helper function that computes an item's discount amount.
 
     :param article_price: The product's original price.
@@ -9,6 +9,7 @@ def _compute_discount(article_price, discount):
         There are two kinds of discounts:
         - a direct cut to the article's price, e.g. get 50€ off your 300€ caviar tin and only pay 250€
         - a percentage discount, e.g. get 20% off your 5€ creme fraiche and only pay 4€
+    :returns: The product's price with the dicount applied.
     '''
     # Direct cut to the article's price
     if discount['type'] == 'amount':
@@ -34,7 +35,7 @@ def _compute_cart_total(items, articles, discounts=None):
 
         if discounts is not None:
             discount = discounts.get(article_id, {'type': 'amount', 'value': 0})
-            article_price = _compute_discount(article_price, discount)
+            article_price = _apply_discount(article_price, discount)
 
         total += article_price * item['quantity']
     return total
